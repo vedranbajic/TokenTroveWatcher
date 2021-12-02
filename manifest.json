@@ -1,0 +1,42 @@
+{
+	"name": "TokenTroveWatcher",
+	"description": "Tracks card prices",
+	"version": "0.0.1",
+	"manifest_version": 3,
+	"permissions": [
+		"storage",
+		"alarms", 
+		"notifications"
+	],
+	"host_permissions": [
+		"*://*.tokentrove.com/*"
+	],
+	"action": {
+		"default_popup": "watcher.popup.html"
+	},
+	"background": {
+		"service_worker": "watcher.background.js"
+	},
+	"content_scripts": [{
+		"matches": [
+			"*://*.tokentrove.com/*"
+		],
+		"js": [
+			"watcher.content-script.js"
+		],
+		"run_at": "document_start"
+	}],
+	"externally_connectable": {
+		"matches": [
+			"*://*.tokentrove.com/*"
+		]
+	},
+	"web_accessible_resources": [{
+		"resources": [
+			"watcher.script.js"
+		],
+		"matches": [
+			"*://*.tokentrove.com/*"
+		]
+	}]
+}
