@@ -5,6 +5,27 @@ const QUALITY = {
 	1: 'Diamond'
 };
 
+const updateCard = (card, update) => {
+	chrome.storage.local.get({watchlist: []}, async (result) => {
+		let watchlist = result.watchlist;
+		let index = watchlist.findIndex(x => x.name === card.name && x.quality === card.quality && x.target === card.target);
+
+		if (index === -1)
+			return console.log('Card not found.');
+
+		watchlist = [
+			...watchlist.slice(0, index),
+			{
+				...watchlist[index],
+				...update
+			},
+			...watchlist.slice(index + 1)
+		];
+
+		chrome.storage.local.set({ watchlist });
+	});
+}
+
 const createNotificationForCard = (card) => {
 	chrome.notifications.create(card.proto, {
 		type: 'basic',
@@ -74,12 +95,19 @@ chrome.alarms.create('watcher', {
 });
 
 chrome.alarms.onAlarm.addListener(() => {
+	console.log('Fetching cards...');
+
 	chrome.storage.local.get({watchlist: []}, async ({ watchlist }) => {
 		for (let { name, quality, target, initalPrice } of watchlist)
 		{
 			const card = await fetchCard(name, quality);
 			if (!card)
 				continue;
+
+			updateCard({
+				...card,
+				target
+			}, card);
 
 			let targetPrice = initalPrice * (1 - target / 100)
 
@@ -102,7 +130,6 @@ const handleMessages = (request, sender, sendResponse) => {
 		chrome.storage.local.get({watchlist: []}, async (result) => {
 			let watchlist = result.watchlist;
 			let index = watchlist.findIndex(x => x.name === name && x.quality === quality && x.target === target);
-			console.log(index);
 
 			if (index === -1)
 			{

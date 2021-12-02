@@ -5,12 +5,19 @@ const toggleCard = (name, quality, target) => chrome.runtime.sendMessage({
 	target
 }, ({ message, watchlist }) => renderWatchlist(watchlist));
 
+const sortByHighestPercentageDrop = (a, b) => {
+	let percentageA = parseInt((1 - a.price/a.initalPrice) * 100);
+	let percentageB = parseInt((1 - b.price/b.initalPrice) * 100);
+
+	return percentageB - percentageA;
+}
+
 const renderWatchlist = (watchlist) => {
 	const watchlistElement = document.getElementById('watchlist');
 	watchlistElement.innerHTML = '';
 
 	try {
-		for(let card of watchlist)
+		for(let card of watchlist.sort(sortByHighestPercentageDrop))
 		{
 			const watchlistEntryElement = document.createElement('tr');
 			watchlistEntryElement.innerHTML = `
@@ -31,7 +38,11 @@ const renderWatchlist = (watchlist) => {
 				</td>
 
 				<td>
-					${(card.initalPrice * (1 - card.target / 100)).toFixed(8)} (-${card.target}%)
+					-${card.target}%
+				</td>
+
+				<td>
+					${card.price} (${parseInt((1 - card.price/card.initalPrice) * 100) * - 1}%)
 				</td>
 
 				<td>
