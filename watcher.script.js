@@ -25,8 +25,8 @@
 		linkAreaElement.append(linkElement);
 	};
 
-	window.addEventListener('DOMContentLoaded', (event) => {
-		if (cardNameTimer) clearInterval(cardNameTimer);
+	//window.addEventListener('DOMContentLoaded', (event) => {
+	//	if (cardNameTimer) clearInterval(cardNameTimer);
 
 		cardNameTimer = setInterval(() => {
 			if (!document.querySelector('.order-modal-body .gu-card'))
@@ -41,5 +41,5 @@
 			if (!document.getElementById('ttw-watch-button'))
 				createButton();
 		}, 500);
-	});
+	//});
 })(document.currentScript.getAttribute("extension-id"));

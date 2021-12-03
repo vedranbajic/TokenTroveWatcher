@@ -169,5 +169,8 @@ const handleMessages = (request, sender, sendResponse) => {
 	return true;
 }
 
-chrome.runtime.onMessage.addListener(handleMessages);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	handleMessages(request, sender, sendResponse);
+	return true;
+});
 chrome.runtime.onMessageExternal.addListener(handleMessages);
